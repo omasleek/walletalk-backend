@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline'">
+  <title>Wallet Sign Test</title>
+</head>
+<body>
+  <button onclick="signNonce()">Sign Nonce</button>
+
+  <script>
+    async function signNonce() {
+      const nonce = "Sign this nonce to login: 1752824906958";
+
+      if (!window.ethereum) {
+        alert("🦊 MetaMask not detected");
+        console.log("❌ window.ethereum is undefined");
+        return;
+      }
+
+      try {
+        // Request wallet access
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        const address = accounts[0];
+        console.log("🔐 Connected wallet:", address);
+
+        // Sign the nonce
+        const signature = await window.ethereum.request({
+          method: "personal_sign",
+          params: [nonce, address]
+        });
+
+        console.log("✅ Signature:", signature);
+        alert("🎉 Signed successfully:\n" + signature);
+      } catch (err) {
+        console.error("❌ Signing failed:", err);
+        alert("Signature failed:\n" + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
